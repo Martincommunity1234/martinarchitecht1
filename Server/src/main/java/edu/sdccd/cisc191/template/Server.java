@@ -12,14 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Server extends Application {
-    private Map<String, Student> students;
-    private ListView<String> studentListView;
-    private File dataFile;
+    private Map<String, Student> students; // Map to store students by name
+    private ListView<String> studentListView; // ListView to display student names
+    private File dataFile; // File to store student data
 
     public Server() {
         students = new HashMap<>();
         dataFile = new File("student_data.txt");
-        loadStudentData();
+        loadStudentData(); // Load student data from file on startup
     }
 
     public static void main(String[] args) {
@@ -104,9 +104,9 @@ public class Server extends Application {
 
         // Show the dialog and handle the result
         dialog.showAndWait().ifPresent(student -> {
-            students.put(student.getName(), student);
-            updateStudentListView();
-            saveStudentData();
+            students.put(student.getName(), student); // Add student to the map
+            updateStudentListView(); // Update the student list view
+            saveStudentData(); // Save the student data to file
         });
     }
 
@@ -114,20 +114,20 @@ public class Server extends Application {
         int selectedIndex = studentListView.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
             String selectedStudentName = studentListView.getItems().get(selectedIndex);
-            students.remove(selectedStudentName);
-            updateStudentListView();
-            saveStudentData();
+            students.remove(selectedStudentName); // Remove student from the map
+            updateStudentListView(); // Update the student list view
+            saveStudentData(); // Save the student data to file
         }
     }
 
     private void updateStudentListView() {
-        studentListView.getItems().clear();
-        studentListView.getItems().addAll(students.keySet());
+        studentListView.getItems().clear(); // Clear existing items in the list view
+        studentListView.getItems().addAll(students.keySet()); // Add student names to the list view
     }
 
     private void saveStudentData() {
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(dataFile))) {
-            outputStream.writeObject(students);
+            outputStream.writeObject(students); // Write the students map to the file using serialization
         } catch (IOException e) {
             System.err.println("Error saving student data: " + e.getMessage());
         }
@@ -138,7 +138,7 @@ public class Server extends Application {
             try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(dataFile))) {
                 Object obj = inputStream.readObject();
                 if (obj instanceof Map) {
-                    students = (Map<String, Student>) obj;
+                    students = (Map<String, Student>) obj; // Read the students map from the file using deserialization
                 }
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println("Error loading student data: " + e.getMessage());
