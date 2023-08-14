@@ -1,25 +1,29 @@
 package edu.sdccd.cisc191.template;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import java.util.Arrays;
+
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Server extends Application {
-    private Map<String, Student> students; // Map to store students by name
-    private ListView<String> studentListView; // ListView to display student names
-    private File dataFile; // File to store student data
+    private Map<String, Student> students;
+    private ListView<String> studentListView;
+    private File dataFile;
+    private int[][] twoDArray; // Correct variable name
 
     public Server() {
         students = new HashMap<>();
         dataFile = new File("student_data.txt");
-        loadStudentData(); // Load student data from file on startup
+        loadStudentData();
+        initializeTwoDArray(); // Initialize the 2D array
     }
 
     public static void main(String[] args) {
@@ -62,7 +66,30 @@ public class Server extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+    private void initializeTwoDArray() {
+        int rows = 5; // Example number of rows
+        int columns = 5; // Example number of columns
+        twoDArray = new int[rows][columns];
+    }
 
+    private int getAtIndex(int row, int column) {
+        if (row >= 0 && row < twoDArray.length && column >= 0 && column < twoDArray[0].length) {
+            return twoDArray[row][column];
+        }
+        return -1; // Return a placeholder value for invalid indices
+    }
+
+    private void setAtIndex(int row, int column, int value) {
+        if (row >= 0 && row < twoDArray.length && column >= 0 && column < twoDArray[0].length) {
+            twoDArray[row][column] = value;
+        }
+    }
+
+    private void printAll() {
+        for (int[] row : twoDArray) {
+            System.out.println(Arrays.toString(row));
+        }
+    }
     private void showAddStudentDialog() {
         Dialog<Student> dialog = new Dialog<>();
         dialog.setTitle("Add Student");
@@ -156,39 +183,4 @@ public class Server extends Application {
         alert.showAndWait();
     }
 
-    private static class Student implements Serializable {
-        private String name;
-        private int id;
-        private int grade;
-
-        public Student(String name, int id, int grade) {
-            this.name = name;
-            this.id = id;
-            this.grade = grade;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getGrade() {
-            return grade;
-        }
-
-        public void setGrade(int grade) {
-            this.grade = grade;
-        }
-    }
 }

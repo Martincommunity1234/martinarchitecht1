@@ -13,7 +13,7 @@ import java.io.*;
  * connection.  It displays the text that it read on
  * standard output.  This program is meant to be used with
  * the server program, DateServer, which sends the current
- * date and time on the computer where the server is running.
+ * date and time on the computer wchere the server is running.
  */
 
 public class Client {
