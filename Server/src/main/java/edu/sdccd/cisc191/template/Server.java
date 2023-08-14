@@ -6,10 +6,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import java.util.Arrays;
-
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,13 +16,13 @@ public class Server extends Application {
     private Map<String, Student> students;
     private ListView<String> studentListView;
     private File dataFile;
-    private int[][] twoDArray; // Correct variable name
+    private int[][] twoDArray;
 
     public Server() {
         students = new HashMap<>();
         dataFile = new File("student_data.txt");
         loadStudentData();
-        initializeTwoDArray(); // Initialize the 2D array
+        initializeTwoDArray();
     }
 
     public static void main(String[] args) {
@@ -55,17 +54,11 @@ public class Server extends Application {
         addStudentMenuItem.setOnAction(event -> showAddStudentDialog());
         deleteStudentMenuItem.setOnAction(event -> deleteSelectedStudent());
 
-        // Event handler for student selection
-        studentListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                showStudentDetails(newValue);
-            }
-        });
-
         primaryStage.setTitle("Student Management System");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
     private void initializeTwoDArray() {
         int rows = 5; // Example number of rows
         int columns = 5; // Example number of columns
@@ -90,6 +83,7 @@ public class Server extends Application {
             System.out.println(Arrays.toString(row));
         }
     }
+
     private void showAddStudentDialog() {
         Dialog<Student> dialog = new Dialog<>();
         dialog.setTitle("Add Student");
@@ -132,6 +126,12 @@ public class Server extends Application {
         // Show the dialog and handle the result
         dialog.showAndWait().ifPresent(student -> {
             students.put(student.getName(), student); // Add student to the map
+
+            // Assuming each new student occupies a new row
+            int row = students.size() - 1;
+            int column = 0;
+            setAtIndex(row, column, student.getId()); // Store the student ID in the 2D array
+
             updateStudentListView(); // Update the student list view
             saveStudentData(); // Save the student data to file
         });
@@ -142,6 +142,12 @@ public class Server extends Application {
         if (selectedIndex >= 0) {
             String selectedStudentName = studentListView.getItems().get(selectedIndex);
             students.remove(selectedStudentName); // Remove student from the map
+
+            // Assuming selectedIndex is the row of the deleted student
+            int deletedRow = selectedIndex;
+            int deletedColumn = 0;
+            setAtIndex(deletedRow, deletedColumn, -1); // Mark the slot as unused in the 2D array
+
             updateStudentListView(); // Update the student list view
             saveStudentData(); // Save the student data to file
         }
@@ -150,6 +156,8 @@ public class Server extends Application {
     private void updateStudentListView() {
         studentListView.getItems().clear(); // Clear existing items in the list view
         studentListView.getItems().addAll(students.keySet()); // Add student names to the list view
+
+        printAll(); // Print the contents of the 2D array
     }
 
     private void saveStudentData() {
@@ -182,5 +190,5 @@ public class Server extends Application {
         alert.setContentText("Name: " + student.getName() + "\nID: " + student.getId() + "\nGrade: " + student.getGrade());
         alert.showAndWait();
     }
-
 }
+
